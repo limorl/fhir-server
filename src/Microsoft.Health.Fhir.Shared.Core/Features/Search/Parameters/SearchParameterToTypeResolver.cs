@@ -300,7 +300,7 @@ namespace Microsoft.Health.Fhir.Core.Features.Search.Parameters
 
         private static ClassMapping GetMapping(Type type)
         {
-            ClassMapping returnValue = ModelInspector.FindClassMappingByType(type);
+            ClassMapping returnValue = ModelInspector.FindClassMapping(type);
 
             if (returnValue == null)
             {

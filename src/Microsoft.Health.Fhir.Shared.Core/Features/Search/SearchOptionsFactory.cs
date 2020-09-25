@@ -191,14 +191,14 @@ namespace Microsoft.Health.Fhir.Core.Features.Search
             if (searchParams.Include?.Count > 0)
             {
                 searchExpressions.AddRange(searchParams.Include.Select(
-                    q => _expressionParser.ParseInclude(parsedResourceType.ToString(), q, false /* not reversed */))
+                    q => _expressionParser.ParseInclude(parsedResourceType.ToString(), q.Item1, false /* not reversed */))
                     .Where(item => item != null));
             }
 
             if (searchParams.RevInclude?.Count > 0)
             {
                 searchExpressions.AddRange(searchParams.RevInclude.Select(
-                    q => _expressionParser.ParseInclude(parsedResourceType.ToString(), q, true /* reversed */))
+                    q => _expressionParser.ParseInclude(parsedResourceType.ToString(), q.Item1, true /* reversed */))
                     .Where(item => item != null));
             }
 
@@ -241,7 +241,7 @@ namespace Microsoft.Health.Fhir.Core.Features.Search
                 var sortings = new List<(SearchParameterInfo, SortOrder)>();
                 List<(string parameterName, string reason)> unsupportedSortings = null;
 
-                foreach (Tuple<string, Hl7.Fhir.Rest.SortOrder> sorting in searchParams.Sort)
+                foreach ((string, Hl7.Fhir.Rest.SortOrder) sorting in searchParams.Sort)
                 {
                     try
                     {

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Web;
 using Hl7.Fhir.Model;
 using Microsoft.Health.Fhir.Client;
+using Microsoft.Health.Fhir.Core.Models;
 using Microsoft.Health.Fhir.Shared.Tests.E2E.Rest.Search;
 using Microsoft.Health.Fhir.Tests.Common.FixtureParameters;
 using Xunit;
@@ -35,7 +36,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest.Search
                 Fixture.Organization,
                 Fixture.Location);
 
-            ValidateSearchEntryMode(bundle, ResourceType.Location);
+            ValidateSearchEntryMode(bundle, KnownResourceTypes.Location);
 
             // ensure that the included resources are not counted
             bundle = await Client.SearchAsync(ResourceType.Location, $"{query}&_summary=count");
@@ -61,7 +62,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest.Search
                 Fixture.Organization,
                 Fixture.Location);
 
-            ValidateSearchEntryMode(bundle, ResourceType.Location);
+            ValidateSearchEntryMode(bundle, KnownResourceTypes.Location);
 
             // ensure that the included resources are not counted
             bundle = await Client.SearchAsync(ResourceType.Location, $"{query}&_summary=count");
@@ -82,7 +83,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest.Search
                 Fixture.Organization,
                 Fixture.Location);
 
-            ValidateSearchEntryMode(bundle, ResourceType.Location);
+            ValidateSearchEntryMode(bundle, KnownResourceTypes.Location);
         }
 
         [Fact]
@@ -117,7 +118,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest.Search
                 organizationResponse.Resource,
                 locationResponse.Resource);
 
-            ValidateSearchEntryMode(bundle, ResourceType.Location);
+            ValidateSearchEntryMode(bundle, KnownResourceTypes.Location);
         }
 
         [Fact]
@@ -134,7 +135,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest.Search
                 Fixture.TrumanSnomedDiagnosticReport,
                 Fixture.TrumanPatient);
 
-            ValidateSearchEntryMode(bundle, ResourceType.DiagnosticReport);
+            ValidateSearchEntryMode(bundle, KnownResourceTypes.DiagnosticReport);
         }
 
         [Fact]
@@ -151,7 +152,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest.Search
                 Fixture.TrumanSnomedDiagnosticReport,
                 Fixture.TrumanPatient);
 
-            ValidateSearchEntryMode(bundle, ResourceType.DiagnosticReport);
+            ValidateSearchEntryMode(bundle, KnownResourceTypes.DiagnosticReport);
         }
 
         [Fact]
@@ -166,7 +167,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest.Search
                 Fixture.SmithSnomedDiagnosticReport,
                 Fixture.SmithPatient);
 
-            ValidateSearchEntryMode(bundle, ResourceType.DiagnosticReport);
+            ValidateSearchEntryMode(bundle, KnownResourceTypes.DiagnosticReport);
 
             bundle = await Client.SearchAsync(bundle.NextLink.ToString());
 
@@ -175,7 +176,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest.Search
                 Fixture.TrumanSnomedDiagnosticReport,
                 Fixture.TrumanPatient);
 
-            ValidateSearchEntryMode(bundle, ResourceType.DiagnosticReport);
+            ValidateSearchEntryMode(bundle, KnownResourceTypes.DiagnosticReport);
         }
 
         [Fact]
@@ -194,7 +195,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest.Search
                 Fixture.TrumanPatient,
                 Fixture.TrumanSnomedObservation);
 
-            ValidateSearchEntryMode(bundle, ResourceType.DiagnosticReport);
+            ValidateSearchEntryMode(bundle, KnownResourceTypes.DiagnosticReport);
         }
 
         [Fact]
@@ -213,7 +214,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest.Search
                 Fixture.TrumanPatient,
                 Fixture.TrumanSnomedObservation);
 
-            ValidateSearchEntryMode(bundle, ResourceType.DiagnosticReport);
+            ValidateSearchEntryMode(bundle, KnownResourceTypes.DiagnosticReport);
         }
 
         [Fact]
@@ -244,7 +245,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest.Search
                 Fixture.TrumanPatient,
                 Fixture.TrumanSnomedObservation);
 
-            ValidateSearchEntryMode(bundle, ResourceType.DiagnosticReport);
+            ValidateSearchEntryMode(bundle, KnownResourceTypes.DiagnosticReport);
 
             // delete the extra entry added
             await Fixture.TestFhirClient.DeleteAsync(newDiagnosticReportResponse.Resource);
@@ -267,7 +268,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest.Search
                 Fixture.Practitioner,
                 Fixture.Organization);
 
-            ValidateSearchEntryMode(bundle, ResourceType.Observation);
+            ValidateSearchEntryMode(bundle, KnownResourceTypes.Observation);
         }
 
         // RevInclude
@@ -284,7 +285,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest.Search
                 Fixture.Location,
                 Fixture.Organization);
 
-            ValidateSearchEntryMode(bundle, ResourceType.Organization);
+            ValidateSearchEntryMode(bundle, KnownResourceTypes.Organization);
 
             // ensure that the included resources are not counted
             bundle = await Client.SearchAsync(ResourceType.Organization, $"{query}&_summary=count");
@@ -305,7 +306,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest.Search
                 Fixture.Location,
                 Fixture.Organization);
 
-            ValidateSearchEntryMode(bundle, ResourceType.Organization);
+            ValidateSearchEntryMode(bundle, KnownResourceTypes.Organization);
         }
 
         [Fact]
@@ -322,7 +323,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest.Search
                 Fixture.TrumanSnomedDiagnosticReport,
                 Fixture.TrumanSnomedObservation);
 
-            ValidateSearchEntryMode(bundle, ResourceType.Observation);
+            ValidateSearchEntryMode(bundle, KnownResourceTypes.Observation);
         }
 
         [Fact]
@@ -337,7 +338,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest.Search
                 Fixture.SmithSnomedDiagnosticReport,
                 Fixture.SmithSnomedObservation);
 
-            ValidateSearchEntryMode(bundle, ResourceType.Observation);
+            ValidateSearchEntryMode(bundle, KnownResourceTypes.Observation);
 
             bundle = await Client.SearchAsync(bundle.NextLink.ToString());
 
@@ -346,7 +347,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest.Search
                 Fixture.TrumanSnomedDiagnosticReport,
                 Fixture.TrumanSnomedObservation);
 
-            ValidateSearchEntryMode(bundle, ResourceType.Observation);
+            ValidateSearchEntryMode(bundle, KnownResourceTypes.Observation);
         }
 
         [Fact]
@@ -363,7 +364,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest.Search
                 Fixture.TrumanSnomedDiagnosticReport,
                 Fixture.TrumanSnomedObservation);
 
-            ValidateSearchEntryMode(bundle, ResourceType.Observation);
+            ValidateSearchEntryMode(bundle, KnownResourceTypes.Observation);
         }
 
         [Fact]
@@ -379,7 +380,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest.Search
                 Fixture.TrumanSnomedObservation,
                 Fixture.TrumanLoincObservation);
 
-            ValidateSearchEntryMode(bundle, ResourceType.Patient);
+            ValidateSearchEntryMode(bundle, KnownResourceTypes.Patient);
         }
 
         [Fact]
@@ -397,7 +398,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest.Search
                 Fixture.TrumanLoincDiagnosticReport,
                 Fixture.TrumanLoincObservation);
 
-            ValidateSearchEntryMode(bundle, ResourceType.Patient);
+            ValidateSearchEntryMode(bundle, KnownResourceTypes.Patient);
         }
 
         [Fact]
@@ -427,7 +428,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest.Search
                 Fixture.TrumanSnomedObservation,
                 newDiagnosticReportResponse.Resource);
 
-            ValidateSearchEntryMode(bundle, ResourceType.Observation);
+            ValidateSearchEntryMode(bundle, KnownResourceTypes.Observation);
 
             // delete the extra entry added
             await Fixture.TestFhirClient.DeleteAsync(newDiagnosticReportResponse.Resource);
@@ -448,14 +449,14 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest.Search
                 Fixture.TrumanPatient,
                 Fixture.AdamsPatient);
 
-            ValidateSearchEntryMode(bundle, ResourceType.Patient);
+            ValidateSearchEntryMode(bundle, KnownResourceTypes.Patient);
         }
 
-        private static void ValidateSearchEntryMode(Bundle bundle, ResourceType matchResourceType)
+        private static void ValidateSearchEntryMode(Bundle bundle, string matchResourceType)
         {
             foreach (Bundle.EntryComponent entry in bundle.Entry)
             {
-                var searchEntryMode = entry.Resource.ResourceType == matchResourceType ? Bundle.SearchEntryMode.Match : Bundle.SearchEntryMode.Include;
+                var searchEntryMode = entry.Resource.TypeName == matchResourceType ? Bundle.SearchEntryMode.Match : Bundle.SearchEntryMode.Include;
                 Assert.Equal(searchEntryMode, entry.Search.Mode);
             }
         }
