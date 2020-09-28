@@ -67,6 +67,9 @@ namespace Microsoft.Health.Fhir.Core.UnitTests.Features.Operations.Reindex
                 _reindexUtilities,
                 _mediator,
                 NullLogger<ReindexJobTask>.Instance);
+
+            _mediator.Send(Arg.Any<ReindexJobCompletedRequest>(), Arg.Any<CancellationToken>())
+                .Returns(new ReindexJobCompletedResponse(true, null));
         }
 
         [Fact]
@@ -203,9 +206,9 @@ namespace Microsoft.Health.Fhir.Core.UnitTests.Features.Operations.Reindex
                 item => Assert.True(item.ContinuationToken == "token" && item.Status == OperationStatus.Completed),
                 item2 => Assert.True(item2.ContinuationToken == null && item2.Status == OperationStatus.Completed));
 
-            await _mediator.Received().Publish(
-                Arg.Is<ReindexJobCompleted>(r => r.SearchParameterUrls.Where(s => s.Contains("Appointment")).Any() &&
-                                            r.SearchParameterUrls.Where(s => s.Contains("AppointmentResponse")).Any()),
+            await _mediator.Received().Send(
+                Arg.Is<ReindexJobCompletedRequest>(r => r.SearchParameterUris.Where(s => s.Contains("Appointment")).Any() &&
+                                            r.SearchParameterUris.Where(s => s.Contains("AppointmentResponse")).Any()),
                 Arg.Any<CancellationToken>());
 
             param.IsSearchable = true;
