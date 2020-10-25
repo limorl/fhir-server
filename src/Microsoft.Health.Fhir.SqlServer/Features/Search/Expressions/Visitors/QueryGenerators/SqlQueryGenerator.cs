@@ -513,6 +513,7 @@ namespace Microsoft.Health.Fhir.SqlServer.Features.Search.Expressions.Visitors.Q
                         }
                         else
                         {
+                            // Selecting from IncludeLimit CTE, which is already limited to IncludeLimit
                             delimited.BeginDelimitedElement().Append(VLatest.Resource.ResourceSurrogateId, table)
                                 .Append(" IN (SELECT Sid1 FROM ").Append(fromCte).Append(")");
                         }
@@ -578,27 +579,14 @@ namespace Microsoft.Health.Fhir.SqlServer.Features.Search.Expressions.Visitors.Q
 
                     // TODO - https://github.com/microsoft/fhir-server/issues/1309 (limit for _include also)
                     var isRev = _cteToLimit.Contains(_tableExpressionCounter - 1);
-                    if (isRev)
-                    {
-                        // the related cte is a reverse include, limit the number of returned items and count to
-                        // see if we are over the threshold (to produce a warning to the client)
-                        StringBuilder.Append("TOP (").Append(Parameters.AddParameter(context.IncludeCount)).Append(") ");
-                    }
 
+                    // Limit the number of returned items and count to IncludeCount for both _include and _revinclude
+                    // Check if we are over the threshold (to produce a warning to the client)
+                    StringBuilder.Append("TOP (").Append(Parameters.AddParameter(context.IncludeCount)).Append(") ");
                     StringBuilder.Append("Sid1, IsMatch, ");
-
-                    if (isRev)
-                    {
-                        StringBuilder.Append("CASE WHEN count(*) over() > ")
+                    StringBuilder.Append("CASE WHEN count(*) over() > ")
                         .Append(Parameters.AddParameter(context.IncludeCount))
                         .AppendLine(" THEN 1 ELSE 0 END AS IsPartial ");
-                    }
-                    else
-                    {
-                        // if forward, just mark as not partial
-                        StringBuilder.AppendLine("0 AS IsPartial ");
-                    }
-
                     StringBuilder.Append("FROM ").AppendLine(TableExpressionName(_tableExpressionCounter - 1));
 
                     // the 'original' include cte is not in the union, but this new layer is instead

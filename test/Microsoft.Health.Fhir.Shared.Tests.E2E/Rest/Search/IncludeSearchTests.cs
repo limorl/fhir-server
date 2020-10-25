@@ -520,6 +520,33 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest.Search
         }
 
         [Fact]
+        public async Task GivenAnIncludeIterateSearchExpressionWithSingleIterationAndCount_WhenSearched_ThenCorrectBundleShouldBeReturned()
+        {
+            // Non-recursive iteration- Single iteration (_include:iterate) and _count
+            string query = $"_include=DiagnosticReport:patient:Patient&_include:iterate=Patient:general-practitioner&code=429858000&_count=1&_tag={Fixture.Tag}";
+
+            Bundle bundle = await Client.SearchAsync(ResourceType.DiagnosticReport, query);
+
+            ValidateBundle(
+                bundle,
+                Fixture.SmithSnomedDiagnosticReport,
+                Fixture.SmithPatient,
+                Fixture.SanchezPractitioner);
+
+            ValidateSearchEntryMode(bundle, ResourceType.DiagnosticReport);
+
+            bundle = await Client.SearchAsync(bundle.NextLink.ToString());
+
+            ValidateBundle(
+                bundle,
+                Fixture.TrumanSnomedDiagnosticReport,
+                Fixture.TrumanPatient,
+                Fixture.TaylorPractitioner);
+
+            ValidateSearchEntryMode(bundle, ResourceType.DiagnosticReport);
+        }
+
+        [Fact]
         public async Task GivenAnIncludeRecurseSearchExpressionWithSingleIteration_WhenSearched_TheIterativeResultsShouldBeAddedToTheBundle()
         {
             // Non-recursive iteration- Single iteration (_include:recurse)
@@ -813,7 +840,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest.Search
             ValidateSearchEntryMode(bundle, ResourceType.MedicationDispense);
         }
 
-        // RecInclude Iterate
+        // RevInclude Iterate
         [Fact]
         public async Task GivenARevIncludeIterateSearchExpressionWithSingleIteration_WhenSearched_TheIterativeResultsShouldBeAddedToTheBundle()
         {
@@ -844,6 +871,33 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest.Search
             // ensure that the included resources are not counted when _total is specified and the results fit in a single bundle.
             bundle = await Client.SearchAsync(ResourceType.Patient, $"{query}&_total=accurate");
             Assert.Equal(4, bundle.Total);
+        }
+
+        [Fact]
+        public async Task GivenARevIncludeIterateSearchExpressionWithSingleIterationAndCount_WhenSearched_ThenCorrectBundleShouldBeReturned()
+        {
+            // Non-recursive iteration- Single iteration (_revinclude:iterate) and _count
+            string query = $"_revinclude=Patient:general-practitioner&_revinclude:iterate=MedicationRequest:patient:Patient&_count=1&_tag={Fixture.Tag}";
+
+            Bundle bundle = await Client.SearchAsync(ResourceType.Practitioner, query);
+
+            ValidateBundle(
+                bundle,
+                Fixture.AndersonPractitioner,
+                Fixture.AdamsPatient,
+                Fixture.AdamsMedicationRequest);
+
+            ValidateSearchEntryMode(bundle, ResourceType.Practitioner);
+
+            bundle = await Client.SearchAsync(bundle.NextLink.ToString());
+
+            ValidateBundle(
+                bundle,
+                Fixture.SanchezPractitioner,
+                Fixture.SmithPatient,
+                Fixture.SmithMedicationRequest);
+
+            ValidateSearchEntryMode(bundle, ResourceType.Practitioner);
         }
 
         [Fact]
