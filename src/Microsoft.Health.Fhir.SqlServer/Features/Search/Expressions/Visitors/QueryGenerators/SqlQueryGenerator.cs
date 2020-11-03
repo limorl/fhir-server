@@ -502,8 +502,8 @@ namespace Microsoft.Health.Fhir.SqlServer.Features.Search.Expressions.Visitors.Q
                                 .Append(" = ").Append(Parameters.AddParameter(VLatest.ReferenceSearchParam.ResourceTypeId, Model.GetResourceTypeId(includeExpression.SourceResourceType)));
                         }
 
-                        // Limit the join to the main select CTE.
-                        // The main select will have max+1 items in the result set to account for paging, so we only want to join using the max amount.
+                        // Non include iterate expression include from the Top cte.
+                        // The main select has max+1 items in the result set to account for paging, so we only want to join using the max amount.
                         if (!includeExpression.Iterate)
                         {
                             delimited.BeginDelimitedElement().Append(VLatest.Resource.ResourceSurrogateId, table)
@@ -513,11 +513,14 @@ namespace Microsoft.Health.Fhir.SqlServer.Features.Search.Expressions.Visitors.Q
                         }
                         else
                         {
-                            // Selecting from IncludeLimit CTE, which is already limited to IncludeLimit
+                            // Include Iterate expressions select from IncludeLimit cte, which is limited to IncludeLimit+1 results.
                             delimited.BeginDelimitedElement().Append(VLatest.Resource.ResourceSurrogateId, table)
-                                .Append(" IN (SELECT Sid1 FROM ").Append(fromCte).Append(")");
+                                .Append(" IN (SELECT TOP(")
+                                .Append(Parameters.AddParameter(context.IncludeLimit))
+                                .Append(") Sid1 FROM ").Append(fromCte).Append(")");
                         }
                     }
+                    
 
                     if (includeExpression.Reversed)
                     {
