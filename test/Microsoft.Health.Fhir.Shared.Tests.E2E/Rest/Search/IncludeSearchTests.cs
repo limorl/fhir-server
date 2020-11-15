@@ -531,6 +531,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest.Search
         }
 
         [Fact]
+        [HttpIntegrationFixtureArgumentSets(DataStore.SqlServer)]
         public async Task GivenAnIncludeIterateSearchExpressionWithSingleIterationAndCount_WhenSearched_ThenCorrectBundleShouldBeReturned()
         {
             // Non-recursive iteration- Single iteration (_include:iterate) and _count
@@ -899,6 +900,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest.Search
         }
 
         [Fact]
+        [HttpIntegrationFixtureArgumentSets(DataStore.SqlServer)]
         public async Task GivenARevIncludeIterateSearchExpressionWithSingleIterationAndCount_WhenSearched_ThenCorrectBundleShouldBeReturned()
         {
             // Non-recursive iteration- Single iteration (_revinclude:iterate) and _count
