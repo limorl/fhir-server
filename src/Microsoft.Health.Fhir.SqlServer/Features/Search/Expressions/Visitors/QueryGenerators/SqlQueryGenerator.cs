@@ -578,8 +578,6 @@ namespace Microsoft.Health.Fhir.SqlServer.Features.Search.Expressions.Visitors.Q
                     break;
                 case TableExpressionKind.IncludeLimit:
                     StringBuilder.Append("SELECT DISTINCT ");
-
-                    // TODO - https://github.com/microsoft/fhir-server/issues/1309 (limit for _include also)
                     var isRev = _cteToLimit.Contains(_tableExpressionCounter - 1);
 
                     // Limit the number of returned items and count to IncludeCount for both _include and _revinclude
